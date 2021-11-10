@@ -23,3 +23,6 @@ Once installed, images can be scanned using:
 
     grype litecoin:latest
 
+## Size
+Multi-stage approach allows to decrease the size of the final image. Having smaller allows to reduce deployment times which can be critical during peak events, as you'll need to scale quickly. Also, you'll be able to reduce associated costs, as you'll need to use less space on your registry and less bandwith when pulling the images from your private registry
+Using [dive](https://github.com/wagoodman/dive) it's easy to check the image size and if we can reduce even more the size of the image. In this case, according to dive, total image size is 92mb and we achieved a 99% of efficiency on the image size
