@@ -1,0 +1,11 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "litecoin.fullname" . }}
+  labels:
+    {{- include "litecoin.labels" . | nindent 4 }}
+spec:
+  minAvailable:  {{ .Values.minimumAvailableReplicas }}
+  selector:
+    matchLabels:
+      {{- include "litecoin.selectorLabels" . | nindent 8 }}

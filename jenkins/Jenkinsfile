@@ -1,0 +1,20 @@
+node {
+    stage('Prepare') {
+        scmInfo = checkout(scm)
+    }
+
+    stage('Build docker image') {
+        // Assuming that we're able to use docker on the pipeline https://www.jenkins.io/doc/book/pipeline/docker/
+        docker.withRegistry('https://myregistry.com', 'credentials') {
+            def image = docker.build("litecoin:${scmInfo.GIT_COMMIT}", "-f docker/Dockerfile")
+            image.push()
+        }
+    }
+    stage('Deploy') {
+        // Install the chart using Helm
+        sh 'helm upgrade -i litecoin statefulset/litecoin --values statefulset/litecion/values.yaml'
+    }
+    stage('Notify') {
+        // Notify slack or any other tool used for comms
+    }
+}
