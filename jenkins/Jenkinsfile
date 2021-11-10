@@ -7,12 +7,18 @@ node {
         // Assuming that we're able to use docker on the pipeline https://www.jenkins.io/doc/book/pipeline/docker/
         docker.withRegistry('https://myregistry.com', 'credentials') {
             def image = docker.build("litecoin:${scmInfo.GIT_COMMIT}", "-f docker/Dockerfile")
+            // Security scan. Fails if critical vulnerabilities are present on the container
+            sh "grype litecoin:${scmInfo.GIT_COMMIT} --fail-on critical"
+            // Assuming that dive is installed on the agent, run it to check the efficiency of the image created
+            // pipeline will fail if the efficiency is not enough
+            sh "dive --ci litecoin:${scmInfo.GIT_COMMIT}"
+            // Push the image into the repository
             image.push()
         }
     }
     stage('Deploy') {
-        // Install the chart using Helm
-        sh 'helm upgrade -i litecoin statefulset/litecoin --values statefulset/litecion/values.yaml'
+        // Install the chart using Helm. We'll have a multibranch pipeline to support the deployment on multiple envs
+        sh "helm upgrade -i litecoin statefulset/litecoin --values statefulset/litecoin/values-${env.BRANCH_NAME}.yaml --set tag=${scmInfo.GIT_COMMIT}"
     }
     stage('Notify') {
         // Notify slack or any other tool used for comms
