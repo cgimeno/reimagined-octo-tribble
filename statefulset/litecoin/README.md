@@ -15,9 +15,8 @@ Of course the number of replicas can be easily updated on the values.yaml file. 
 Apart from that PodDisruptionBudget (PDB) was also added into the helm chart. PodDisruptionBudget are very important during cluster upgrades, as they won't allow Kubernetes scheduler to evict your pods for upgrading the pyshical node if the PDB is not met, ensuring that you'll have a minimum amount of pods always available.
 
 ## Monitoring
-Just to briefly mention it even, a very common pattern when running a workload in Kubernetes is to ship logs to a central place, like Elasticsearch. Taking into account that the pod will be writing all the logging into the stdout, it's very easy using Logstash / filebeat / vector.dev to read them from there and ship to Elastic.
+A very common pattern when running a workload in Kubernetes is to ship logs to a central place, like Elasticsearch. Taking into account that the pod will be writing all the logging into the stdout, it's very easy using Logstash / filebeat / vector.dev to read them from there and ship to Elastic.
 
 On the metrics part, litecoin doesn't provide any specific prometheus exporter. However, using [vector.dev](https://vector.dev/) it's very easy to parse the logs and create some metrics based on these logs.
 
 If you are interested on knowing more about the topic, I wrote an article a few months ago, explaining how to do it. You can find it [here](https://medium.com/adidoescode/improving-your-observability-creating-metrics-from-your-logs-9ae8de9299f4)
-
